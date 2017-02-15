@@ -2,12 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-void selectionSort(int array[], int length);
-void swap(int array[], int first, int second);
-
+void quickSort(int *numbers, int left, int right);
 int main(void)
 {
-
 
 clock_t cl = clock( );
 
@@ -51,7 +48,7 @@ clock_t cl = clock( );
 		return 1;
 	}
 
-	selectionSort(array, N);
+        quickSort(array,0, N);
 
 	for ( i = 0; i < N; i++)
 	{
@@ -80,8 +77,8 @@ clock_t cl = clock( );
 			fscanf(Numbers2Ptr,"%d",&array[i]);
 		}
 	
-	selectionSort(array, K);
-	
+	//selectionSort(array, K);
+	quickSort(array,0, K);
 	fclose(Numbers2Ptr);
 	int readTemp;
 	if((Part1Ptr = fopen("Part1.txt", "r")) == NULL)
@@ -138,15 +135,35 @@ void selectionSort(int array[], int length)
 				smallest = j;
 			}
 		}
-			swap(array, i, smallest);
+
 	 }
 }
-/*swap values function*/
-void swap(int array[], int first, int second)
+	
+void quickSort(int *numbers, int left, int right)  /*https://prog-cpp.ru/sort-fast/*/
 {
-	int temp;
-	temp = array[first];
-	array[first] = array[second];
-	array[second] = temp;
+  int pivot = numbers[left];
+  int l_hold = left, r_hold = right; //левая и правая граница
+  while (left < right) // пока границы не сомкнутся
+  {
+    // сдвигаем правую границу пока элемент [right] больше [pivot]
+    while ((numbers[right] >= pivot) && (left < right)) right--; 
+    if (left != right) // если границы не сомкнулись
+    {
+      numbers[left] = numbers[right]; // перемещаем элемент [right] на место разрешающего
+      left++; // сдвигаем левую границу вправо 
+    }
+    // сдвигаем левую границу пока элемент [left] меньше [pivot]
+    while ((numbers[left] <= pivot) && (left < right)) left++; 
+    if (left != right) // если границы не сомкнулись
+    { 
+      numbers[right] = numbers[left]; // перемещаем элемент [left] на место [right]
+      right--; // сдвигаем правую границу вправо 
+    }
+  }
+  numbers[left] = pivot; // ставим разрешающий элемент на место
+  pivot = left;
+  left = l_hold;
+  right = r_hold;
+  if (left < pivot) quickSort(numbers, left, pivot - 1);
+  if (right > pivot) quickSort(numbers, pivot + 1, right);
 }
-		
